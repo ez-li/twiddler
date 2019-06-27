@@ -1,27 +1,87 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" href="style.css">
     <script src="jquery.js"></script>
     <script src="data_generator.js"></script>
+
   </head>
   <body>
+
+    <h1>Twiddler</h1>
+    <button id="refresh">Refresh tweets</button>
+    <div id ="content"></div> 
+
     <script>
+      $(document).ready(function() {
 
-      $(document).ready(function(){
         var $body = $('body');
-        $body.html('');
+        var $content = $('#content');
+        $content.html('');
 
-        var index = streams.home.length - 1;
-        while(index >= 0){
-          var tweet = streams.home[index];
-          var $tweet = $('<div></div>');
-          $tweet.text('@' + tweet.user + ': ' + tweet.message);
-          $tweet.appendTo($body);
-          index -= 1;
+        function showTweets(tweets) {
+
+          var index = tweets.length - 1;
+          while (index >= 0) {
+
+            // tweet message
+            var tweet = tweets[index];
+            var $tweet = $('<div class="tweet"></div>').append(tweet.message);
+
+            //user
+            var user = tweets[index].user;
+            var $username = $('<div class="username"></div>').append('@'+user);
+
+            // timestamp
+            var time = tweet.created_at;
+
+            var month = time.getMonth() + 1;
+            var date = time.getDate();
+            var year = time.getYear() + 1900;
+            var tweetTime = month + '.' + date + '.' + year;
+            var $tweetTime = $('<div class="tweetTime"></div>')
+
+            var currentTime = new Date();
+            var timeElapsed = currentTime - time;
+            timeElapsed /= 1000;
+            var minutesElapsed = Math.round(timeElapsed % 60);
+            var $minutesElapsed = $('<div class="minutesElapsed"></div>');
+
+            var $timestamp = $('<div class="timestamp">').append(minutesElapsed + 'm ago on ' + tweetTime);
+
+            // putting it all into one tweet
+            var $tweetBox = $('<div class="tweetBox"></div>');
+            $tweetBox.append($username, $timestamp, $tweet)
+            $tweetBox.appendTo($content);
+            index -= 1;
+          }
+
+          // generating a usertimeline
+          $('.username').on('click', function() {
+            var $user = $(this).text().substring(1);
+            alert("work in progress");
+          });
         }
-
+        $('#refresh').on('click', function() {
+          alert("work in progress");
+        })
+        showTweets(streams.home);
       });
 
     </script>
   </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
