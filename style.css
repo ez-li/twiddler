@@ -11,13 +11,15 @@ body {
 	padding-top: 20px;
 }
 
+#pageTitle {
+	cursor: pointer;
+}
 
 #content {
 	background-color: #ffffff;
 	width: 60%;
 	margin-top: 20px;
 	margin-left: 20%;
-
 }
 
 .tweetBox {
@@ -27,14 +29,36 @@ body {
 	padding-left: 4%;
 }
 
+.flexBox {
+	display:flex;
+}
+
 .username {
 	font-weight: bold;
     cursor: pointer;
+    margin-right:5px;
     padding-bottom: 5px;
+}
+
+.username:hover {
+	text-decoration: underline;
+
 }
 
 .timestamp {
 	color: grey;
+	cursor: pointer;
+	display:flex;
+	margin-left: 5px;
+}
+
+.timestamp:hover {
+	text-decoration: underline;
+}
+
+.printTimeDate {
+	text-decoration: none;
+	padding-left: 10px;
 }
 
 .tweet {
@@ -43,7 +67,16 @@ body {
 }
 
 #seeNew {
+	font-size: 14px;
+	font-weight: bold;
+	color: #ffffff;
+	background: #1da1f2;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 5px;
+	padding-bottom: 5px;
 	margin-left: 20%;
+	border-radius:20px;
 	cursor: pointer;
 }
 

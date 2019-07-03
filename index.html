@@ -4,11 +4,11 @@
     <link rel="stylesheet" href="style.css">
     <script src="jquery.js"></script>
     <script src="data_generator.js"></script>
-
+    <title>Twiddler</title>
   </head>
   <body>
 
-    <h1>Twiddler</h1>
+    <h1 id="pageTitle">Twiddler</h1>
     <button id="seeNew">See new tweets</button>
     <div id ="content"></div> 
 
@@ -17,9 +17,11 @@
 
         var $body = $('body');
         var $content = $('#content');
-        $content.html('');
 
         function showTweets(tweets) {
+          $content.html('');
+
+          console.log('beginning', tweets);
 
           var index = tweets.length - 1;
           while (index >= 0) {
@@ -34,37 +36,68 @@
 
             // timestamp
             var time = tweet.created_at;
-
             var month = time.getMonth() + 1;
             var date = time.getDate();
             var year = time.getYear() + 1900;
-            var tweetTime = month + '.' + date + '.' + year;
-            var $tweetTime = $('<div class="tweetTime"></div>')
-
+            var hour = (time.getHours() + 24) % 12 || 12;
+            var ampm = hour >= 12 ? 'PM' : 'AM';
+            var min = (time.getMinutes() < 10 ? '0' : '') + time.getMinutes();
+            var $tweetTime = $('<div class="tweetTime"></div>');
+            // calculating time passed from tweet upload
             var currentTime = new Date();
-            var timeElapsed = currentTime - time;
-            timeElapsed /= 1000;
-            var minutesElapsed = Math.round(timeElapsed % 60);
+            var secondsElapsed = (currentTime - time)/1000;
+            // calculate time elapsed, seconds or minutes
+            var timeElapsed = (secondsElapsed > 60 ? (Math.round(secondsElapsed / 60) + 'm') :  (Math.round(secondsElapsed) + 's'));
+            var minutesElapsed = Math.round(timeElapsed / 60);
             var $minutesElapsed = $('<div class="minutesElapsed"></div>');
-
-            var $timestamp = $('<div class="timestamp">').append(minutesElapsed + 'm ago on ' + tweetTime);
+            // setting upload date and time format
+            var printDate = getMonthName(month) + ' ' + date + ', ' + year;
+            var printTime = hour + ':' + min;
+            var $printTimeDate = $('<div class="printTimeDate"></div>').append(printTime + ' ' + ampm + ' · ' + printDate);
+            // add this timestamp to tweet
+            var $timestamp = $('<div class="timestamp">').append(timeElapsed);
+            // hover for upload time and date
+            $('.timestamp').hover(function() {
+              $(this).append($printTimeDate);
+            }, function() {
+              $(this).find($printTimeDate).remove();
+            })
 
             // putting it all into one tweet
             var $tweetBox = $('<div class="tweetBox"></div>');
-            $tweetBox.append($username, $timestamp, $tweet)
+            var $flexBox = $('<div class="flexBox"></div>');
+            $flexBox.append($username,' · ' ,$timestamp);
+            $tweetBox.append($flexBox, $tweet);
             $tweetBox.appendTo($content);
             index -= 1;
           }
 
+          // title click refresh page
+          $('#pageTitle').on('click', function(event) {    
+            console.log('inside show tweets function', streams.home);
+            showTweets(streams.home);
+          });
+
           // generating a usertimeline
           $('.username').on('click', function() {
             var $user = $(this).text().substring(1);
-            alert("work in progress");
+            showTweets(streams.users[$user]);
           });
+
         }
+
+        // showing new tweets button
         $('#seeNew').on('click', function() {
-          alert("work in progress");
+          showTweets(streams.home);
         })
+
+        // month name function
+        function getMonthName(monthNumber) {
+              var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+              return months[monthNumber - 1];
+        }
+
+        //console.log('outside show tweets function', streams.home);
         showTweets(streams.home);
       });
 
